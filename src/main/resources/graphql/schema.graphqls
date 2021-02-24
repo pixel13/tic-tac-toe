@@ -1,0 +1,32 @@
+type Cell {
+    row: Int!
+    column: Int!
+    value: String
+}
+
+type Game {
+    onMove: Player!
+    isStarted: Boolean!
+    isOver: Boolean!
+    winner: Player
+    board(firstPlayerSign: String = "X", secondPlayerSign: String = "O"): [Cell!]!
+}
+
+type Player {
+    token: String!
+    name: String!
+}
+
+type Query {
+    gameStatus: Game!
+}
+
+type Mutation {
+    startGame(playerName: String!): Player!
+    move(row: Int!, column: Int!): Game!
+}
+
+type Subscription {
+    opponentArrived: String!
+    opponentMove: Game!
+}
