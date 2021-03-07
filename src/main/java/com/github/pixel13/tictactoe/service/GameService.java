@@ -5,7 +5,7 @@ import com.github.pixel13.tictactoe.domain.Player;
 
 public interface GameService {
 
-  Player registerPlayer(String name);
+  Game registerPlayer(String name);
 
   Player validateToken(String token);
 

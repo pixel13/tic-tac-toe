@@ -21,7 +21,7 @@ public class GameServiceImpl implements GameService {
   private final Map<String, Game> games = new HashMap<>();
 
   @Override
-  public Player registerPlayer(String name) {
+  public Game registerPlayer(String name) {
     return assignToGame(newPlayer(name));
   }
 
@@ -54,10 +54,9 @@ public class GameServiceImpl implements GameService {
     } else if (isDraw(board)) {
       game.setOver(true);
       game.setDraw(true);
-    } else {
-      game.changeTurn();
     }
 
+    game.changeTurn();
     return game;
   }
 
@@ -131,25 +130,23 @@ public class GameServiceImpl implements GameService {
     return player;
   }
 
-  private Player assignToGame(Player player) {
-    games.values().stream()
+  private Game assignToGame(Player player) {
+    return games.values().stream()
         .filter(Game::isWaitingForSecondPlayer)
         .findAny()
-        .ifPresentOrElse(
-            game -> setSecondPlayer(game, player),
-            () -> newGame(player)
-        );
-
-    return player;
+        .map(game -> setSecondPlayer(game, player))
+        .orElse(newGame(player));
   }
 
-  private void setSecondPlayer(Game game, Player player) {
+  private Game setSecondPlayer(Game game, Player player) {
     game.setSecondPlayer(player);
+    return game;
   }
 
-  private void newGame(Player player) {
+  private Game newGame(Player player) {
     Game game = new Game(player);
     games.put(game.getId(), game);
+    return game;
   }
 
 }

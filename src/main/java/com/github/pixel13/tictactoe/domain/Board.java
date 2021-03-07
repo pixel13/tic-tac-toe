@@ -19,6 +19,13 @@ public class Board {
     return grid[x][y] == null;
   }
 
+  public boolean isClear() {
+    return IntStream.range(0, grid.length)
+        .boxed()
+        .flatMap(x -> IntStream.range(0, grid[x].length).mapToObj(y -> isEmpty(x, y)))
+        .allMatch(v -> v);
+  }
+
   public void put(int x, int y) {
     grid[x][y] = nextValue;
     nextValue = !nextValue;

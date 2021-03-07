@@ -5,10 +5,10 @@ type Cell {
 }
 
 type Game {
-    onMove: Player!
+    onMove: String!
     isStarted: Boolean!
     isOver: Boolean!
-    winner: Player
+    winner: String
     board(firstPlayerSign: String = "X", secondPlayerSign: String = "O"): [Cell!]!
 }
 

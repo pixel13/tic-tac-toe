@@ -1,31 +1,25 @@
 package com.github.pixel13.tictactoe.domain;
 
+import java.util.Optional;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+@Data
 public class Game {
 
   public static final int SIZE = 3;
 
-  @Getter
-  private final String id = UUID.randomUUID().toString();
-
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private boolean isFirstPlayerOnMove = true;
-
-  @Getter
-  @Setter
+  private final String id = UUID.randomUUID().toString();
   private boolean isOver = false;
-
-  @Setter
   private boolean isDraw = false;
-
   private final Player firstPlayer;
-
-  @Setter
   private Player secondPlayer;
-
-  @Getter
   private final Board board = new Board(SIZE);
 
   public Game(Player player) {
@@ -37,7 +31,7 @@ public class Game {
   }
 
   public boolean hasPlayer(Player player) {
-    return firstPlayer.equals(player) || secondPlayer.equals(player);
+    return player.equals(firstPlayer) || player.equals(secondPlayer);
   }
 
   public boolean isOnMove(Player player) {
@@ -52,11 +46,15 @@ public class Game {
     return isFirstPlayerOnMove ? firstPlayer : secondPlayer;
   }
 
-  public Player getWinner() {
+  public Optional<Player> getWinner() {
     if (!isOver || isDraw) {
-      return null;
+      return Optional.empty();
     }
 
-    return getPlayerOnMove();
+    return Optional.of(getLastMovePlayer());
+  }
+
+  private Player getLastMovePlayer() {
+    return isFirstPlayerOnMove ? secondPlayer : firstPlayer;
   }
 }

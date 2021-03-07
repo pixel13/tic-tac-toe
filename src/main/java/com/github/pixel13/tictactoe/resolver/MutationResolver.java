@@ -8,6 +8,7 @@ import graphql.kickstart.tools.GraphQLMutationResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Sinks.Many;
 
 @Component
 public class MutationResolver implements GraphQLMutationResolver {
@@ -18,12 +19,24 @@ public class MutationResolver implements GraphQLMutationResolver {
   @Autowired
   private AuthManager authManager;
 
+  @Autowired
+  private Many<Game> gameSink;
+
   public Player startGame(String playerName) {
-    return gameService.registerPlayer(playerName);
+    Game game = gameService.registerPlayer(playerName);
+
+    if (game.isWaitingForSecondPlayer()) {
+      return game.getFirstPlayer();
+    }
+
+    gameSink.tryEmitNext(game);
+    return game.getSecondPlayer();
   }
 
   @PreAuthorize("isAuthenticated()")
   public Game move(int row, int column) {
-    return gameService.move(authManager.getCurrentPlayer(), row, column);
+    Game game = gameService.move(authManager.getCurrentPlayer(), row, column);
+    gameSink.tryEmitNext(game);
+    return game;
   }
 }
