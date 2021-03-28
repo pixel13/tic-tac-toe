@@ -1,0 +1,5 @@
+mutation StartGame($playerName: String!) {
+    startGame(playerName: $playerName) {
+        token
+    }
+}

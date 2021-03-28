@@ -1,0 +1,11 @@
+subscription OpponentMove {
+    opponentMove {
+        board {
+            row
+            column
+            value
+        }
+        isOver
+        winner
+    }
+}

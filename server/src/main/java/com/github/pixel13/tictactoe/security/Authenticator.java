@@ -21,6 +21,10 @@ public class Authenticator {
   @Autowired
   private GameService gameService;
 
+  public boolean isAuthenticated() {
+    return (SecurityContextHolder.getContext().getAuthentication() instanceof PreAuthenticatedAuthenticationToken);
+  }
+
   public void doAuthenticate(String authorizationHeader) {
     Optional.ofNullable(authorizationHeader)
         .filter(header -> header.startsWith(BEARER))

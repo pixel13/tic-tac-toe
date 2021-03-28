@@ -135,7 +135,7 @@ public class GameServiceImpl implements GameService {
         .filter(Game::isWaitingForSecondPlayer)
         .findAny()
         .map(game -> setSecondPlayer(game, player))
-        .orElse(newGame(player));
+        .orElseGet(() -> newGame(player));
   }
 
   private Game setSecondPlayer(Game game, Player player) {

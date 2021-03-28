@@ -1,0 +1,11 @@
+query GameStatus {
+    gameStatus {
+        isStarted
+        onMove
+        board {
+            row
+            column
+            value
+        }
+    }
+}

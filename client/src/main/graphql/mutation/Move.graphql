@@ -1,0 +1,11 @@
+mutation Move($row: Int!, $column: Int!) {
+    move(row: $row, column: $column) {
+        board {
+            row
+            column
+            value
+        }
+        isOver
+        winner
+    }
+}
