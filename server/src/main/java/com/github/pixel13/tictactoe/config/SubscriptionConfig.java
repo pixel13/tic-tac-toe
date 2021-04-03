@@ -6,13 +6,14 @@ import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.Many;
+import reactor.util.concurrent.Queues;
 
 @Configuration
 public class SubscriptionConfig {
 
   @Bean
   public Many<Game> gameSink() {
-    return Sinks.many().multicast().onBackpressureBuffer();
+    return Sinks.many().multicast().onBackpressureBuffer(Queues.SMALL_BUFFER_SIZE, false);
   }
 
   @Bean

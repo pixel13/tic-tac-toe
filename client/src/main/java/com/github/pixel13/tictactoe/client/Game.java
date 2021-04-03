@@ -163,6 +163,7 @@ public class Game {
 
   private void endGame() {
     subscription.cancel();
+    client.shutdown();
     System.exit(0);
   }
 }

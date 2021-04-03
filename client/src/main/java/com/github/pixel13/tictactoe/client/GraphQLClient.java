@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import lombok.SneakyThrows;
 import okhttp3.Interceptor.Chain;
 import okhttp3.OkHttpClient;
 import okhttp3.Request.Builder;
@@ -192,6 +193,17 @@ public class GraphQLClient {
     return Optional.ofNullable(authToken)
         .map(token -> Map.of(HEADER_AUTHORIZATION, BEARER_PREFIX + token))
         .orElse(Collections.emptyMap());
+  }
+
+  public void shutdown() {
+    apolloClient.disableSubscriptions();
+    waitForConnectionClosed();
+  }
+
+  @SneakyThrows
+  private void waitForConnectionClosed() {
+    // Found no other way to be sure that the websocket connections are really closed
+    Thread.sleep(1000);
   }
 
 }
