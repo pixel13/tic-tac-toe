@@ -56,17 +56,7 @@ public class GraphQLClient {
 
     apolloClient
         .query(query)
-        .enqueue(new Callback<>() {
-          @Override
-          public void onResponse(@NotNull com.apollographql.apollo.api.Response<Optional<T>> response) {
-            completeFromResponse(future, response);
-          }
-
-          @Override
-          public void onFailure(@NotNull ApolloException e) {
-            future.completeExceptionally(e);
-          }
-        });
+        .enqueue(new CompletableFutureCallback<>(future));
 
     return future;
   }
@@ -76,17 +66,7 @@ public class GraphQLClient {
 
     apolloClient
         .mutate(mutation)
-        .enqueue(new Callback<>() {
-          @Override
-          public void onResponse(@NotNull com.apollographql.apollo.api.Response<Optional<T>> response) {
-            completeFromResponse(future, response);
-          }
-
-          @Override
-          public void onFailure(@NotNull ApolloException e) {
-            future.completeExceptionally(e);
-          }
-        });
+        .enqueue(new CompletableFutureCallback<>(future));
 
     return future;
   }
@@ -95,7 +75,7 @@ public class GraphQLClient {
     CompletableFuture<T> future = new CompletableFuture<>();
 
     ApolloSubscriptionCall<Optional<T>> subscriptionCall = apolloClient.subscribe(subscription);
-    subscriptionCall.execute(new ApolloSubscriptionCall.Callback<>() {
+    subscriptionCall.execute(new SubscriptionCallback<>() {
       @Override
       public void onResponse(@NotNull com.apollographql.apollo.api.Response<Optional<T>> response) {
         completeFromResponse(future, response);
@@ -107,21 +87,6 @@ public class GraphQLClient {
         future.completeExceptionally(e);
         subscriptionCall.cancel();
       }
-
-      @Override
-      public void onCompleted() {
-        // Do nothing
-      }
-
-      @Override
-      public void onTerminated() {
-        // Do nothing
-      }
-
-      @Override
-      public void onConnected() {
-        // Do nothing
-      }
     });
 
     return future;
@@ -129,7 +94,7 @@ public class GraphQLClient {
 
   public <T> ApolloSubscriptionCall<Optional<T>> subscribe(Subscription<?, Optional<T>, ?> subscription, Consumer<T> consumer) {
     ApolloSubscriptionCall<Optional<T>> subscriptionCall = apolloClient.subscribe(subscription);
-    subscriptionCall.execute(new ApolloSubscriptionCall.Callback<>() {
+    subscriptionCall.execute(new SubscriptionCallback<>() {
       @Override
       public void onResponse(@NotNull com.apollographql.apollo.api.Response<Optional<T>> response) {
         if (response.getData().isEmpty()) {
@@ -143,21 +108,6 @@ public class GraphQLClient {
       public void onFailure(@NotNull ApolloException e) {
         throw new RuntimeException(e);
       }
-
-      @Override
-      public void onCompleted() {
-        // Do nothing
-      }
-
-      @Override
-      public void onTerminated() {
-        // Do nothing
-      }
-
-      @Override
-      public void onConnected() {
-        // Do nothing
-      }
     });
 
     return subscriptionCall;
@@ -167,7 +117,8 @@ public class GraphQLClient {
     this.authToken = authToken;
   }
 
-  private <T> void completeFromResponse(CompletableFuture<T> future, @NotNull com.apollographql.apollo.api.Response<Optional<T>> response) {
+  private static <T> void completeFromResponse(CompletableFuture<T> future,
+      @NotNull com.apollographql.apollo.api.Response<Optional<T>> response) {
     if (response.hasErrors()) {
       String errors = Objects.requireNonNull(response.getErrors()).stream().map(Error::toString).collect(Collectors.joining(", "));
       future.completeExceptionally(new ApolloException(errors));
@@ -204,6 +155,43 @@ public class GraphQLClient {
   private void waitForConnectionClosed() {
     // Found no other way to be sure that the websocket connections are really closed
     Thread.sleep(1000);
+  }
+
+  private static class CompletableFutureCallback<T> extends Callback<Optional<T>> {
+
+    private final CompletableFuture<T> future;
+
+    public CompletableFutureCallback(CompletableFuture<T> future) {
+      this.future = future;
+    }
+
+    @Override
+    public void onResponse(@NotNull com.apollographql.apollo.api.Response<Optional<T>> response) {
+      completeFromResponse(future, response);
+    }
+
+    @Override
+    public void onFailure(@NotNull ApolloException e) {
+      future.completeExceptionally(e);
+    }
+  }
+
+  private abstract static class SubscriptionCallback<T> implements ApolloSubscriptionCall.Callback<Optional<T>> {
+
+    @Override
+    public void onCompleted() {
+      // Do nothing
+    }
+
+    @Override
+    public void onTerminated() {
+      // Do nothing
+    }
+
+    @Override
+    public void onConnected() {
+      // Do nothing
+    }
   }
 
 }

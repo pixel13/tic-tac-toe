@@ -8,6 +8,7 @@ import com.github.pixel13.tictactoe.client.query.GameStatusQuery.Data;
 import com.github.pixel13.tictactoe.client.query.OpponentMoveSubscription;
 import com.github.pixel13.tictactoe.client.subscription.OpponentArrivedSubscription;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Scanner;
@@ -98,13 +99,26 @@ public class Game {
   }
 
   private void makeAMove() {
-    ask("\nPlease make a move (1-9): ");
-    int move = scanner.nextInt();
+    int move = 0;
+    while (move < 1 || move > 9) {
+      ask("\nPlease make a move (1-9): ");
+      try {
+        move = scanner.nextInt();
+      } catch (NoSuchElementException e) {
+        scanner.next();
+        move = 0;
+      }
+    }
     int row = Math.floorDiv(move - 1, 3);
     int column = Math.floorMod(move - 1, 3);
 
     client.mutate(new MoveMutation(row, column))
-        .thenAccept(data -> {
+        .whenComplete((data, ex) -> {
+          if (ex != null) {
+            print("This is not a valid move, try again.");
+            makeAMove();
+            return;
+          }
           updateBoard(data.getMove().getBoard().stream().map(Cell::from));
           printBoard();
 
