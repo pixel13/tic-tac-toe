@@ -1,0 +1,8 @@
+query {
+    gameStatus {
+        isOver
+        isStarted
+        onMove
+        winner
+    }
+}

@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Authenticator {
 
-  private static final String BEARER = "Bearer ";
-  private static final String ROLE_AUTHENTICATED = "AUTHENTICATED";
+  public static final String ROLE_AUTHENTICATED = "AUTHENTICATED";
+  static final String BEARER = "Bearer ";
   private static final Collection<GrantedAuthority> AUTHORITIES = Collections.singleton(new SimpleGrantedAuthority(ROLE_AUTHENTICATED));
 
   @Autowired
