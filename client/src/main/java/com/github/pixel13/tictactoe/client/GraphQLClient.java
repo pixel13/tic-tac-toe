@@ -10,8 +10,6 @@ import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport.Factory;
 import java.io.IOException;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -35,10 +33,7 @@ public class GraphQLClient {
   private String authToken;
 
   public GraphQLClient(String serverEndpoint, String subscriptionEndpoint) {
-
-    CookieManager cookieManager = new CookieManager();
-    cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-
+    
     OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
         .minWebSocketMessageToCompress(0)
         .addInterceptor(this::authInterceptor)
