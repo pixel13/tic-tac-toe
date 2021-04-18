@@ -1,32 +1,63 @@
+"A cell of the game board"
 type Cell {
+    "The row of this cell (0..2)"
     row: Int!
+    "The column of this cell (0..2)"
     column: Int!
+    "The value assigned to this cell (e.g. 'X', 'O'), or null if the cell is empty"
     value: String
 }
 
+"A single match between two players"
 type Game {
+    "The name of the player who is currently on move"
     onMove: String!
+    "Tells if the match is started"
     isStarted: Boolean!
+    "Tells if the match is over"
     isOver: Boolean!
+    "The name of the player who wins the match, or null if the game is not yet ended or the game is draw"
     winner: String
-    board(firstPlayerSign: String = "X", secondPlayerSign: String = "O"): [Cell!]!
+    "The game board"
+    board(
+        "The sign that identifies the first player"
+        firstPlayerSign: String = "X",
+        "The sign that identifies the second player"
+        secondPlayerSign: String = "O"
+    ): [Cell!]!
 }
 
+"A player of the game"
 type Player {
+    "The token used to authorize the user"
     token: String!
+    "The name of the user"
     name: String!
 }
 
 type Query {
+
+    "Returns the current status of the game (requires authentication)"
     gameStatus: Game!
 }
 
 type Mutation {
-    startGame(playerName: String!): Player!
-    move(row: Int!, column: Int!): Game!
+
+    "Registers a player in the game"
+    startGame("The name of the player" playerName: String!): Player!
+
+    "Put the sign in the cell with the given coordinates (requires authentication)"
+    move(
+        "Row of the cell (0..2)" row: Int!,
+        "Column of the cell (0..2)" column: Int!
+    ): Game!
 }
 
 type Subscription {
+
+    "Sends the name of the opponent when he/she arrives (requires authentication)"
     opponentArrived: String!
+
+    "Retuns the current game after the move of the opponent (requires authentication)"
     opponentMove: Game!
 }
