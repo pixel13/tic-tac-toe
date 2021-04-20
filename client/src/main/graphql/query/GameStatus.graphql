@@ -1,6 +1,6 @@
 query GameStatus {
     gameStatus {
-        isStarted
+        isReady
         onMove
         board {
             row

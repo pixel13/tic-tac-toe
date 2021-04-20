@@ -1,7 +1,7 @@
 query {
     gameStatus {
         isOver
-        isStarted
+        isReady
         onMove
         winner
     }

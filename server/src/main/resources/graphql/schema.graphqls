@@ -12,8 +12,8 @@ type Cell {
 type Game {
     "The name of the player who is currently on move"
     onMove: String!
-    "Tells if the match is started"
-    isStarted: Boolean!
+    "Tells if the match is ready to start (both players have arrived)"
+    isReady: Boolean!
     "Tells if the match is over"
     isOver: Boolean!
     "The name of the player who wins the match, or null if the game is not yet ended or the game is draw"

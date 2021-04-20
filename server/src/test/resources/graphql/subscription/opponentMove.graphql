@@ -1,7 +1,7 @@
 subscription {
     opponentMove {
         isOver
-        isStarted
+        isReady
         onMove
         winner
         board {

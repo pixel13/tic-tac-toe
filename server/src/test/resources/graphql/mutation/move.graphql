@@ -1,7 +1,7 @@
 mutation Move($row: Int!, $column: Int!) {
     move(row: $row, column: $column) {
         isOver
-        isStarted
+        isReady
         onMove
         winner
         board {

@@ -72,18 +72,18 @@ class GameResolverTest {
   }
 
   @Test
-  @DisplayName("returns that the game is not started if waiting for the second player")
-  void isStartedFalse() {
+  @DisplayName("returns that the game is not ready if waiting for the second player")
+  void isReadyFalse() {
     when(mockGame.isWaitingForSecondPlayer()).thenReturn(true);
-    boolean result = resolver.isStarted(mockGame);
+    boolean result = resolver.isReady(mockGame);
     assertFalse(result);
   }
 
   @Test
-  @DisplayName("returns that the game is started if not waiting for the second player")
-  void isStartedTrue() {
+  @DisplayName("returns that the game is ready if not waiting for the second player")
+  void isReadyTrue() {
     when(mockGame.isWaitingForSecondPlayer()).thenReturn(false);
-    boolean result = resolver.isStarted(mockGame);
+    boolean result = resolver.isReady(mockGame);
     assertTrue(result);
   }
 }

@@ -23,7 +23,7 @@ public class GameResolver implements GraphQLResolver<Game> {
     return game.getBoard().toCells(firstPlayerSign, secondPlayerSign);
   }
 
-  public boolean isStarted(Game game) {
+  public boolean isReady(Game game) {
     return !game.isWaitingForSecondPlayer();
   }
 

@@ -30,7 +30,7 @@ class GameStatusQueryTest extends IntegrationTest {
     GraphQLResponse response = firstPlayerTemplate.postForResource("graphql/query/gameStatus.graphql");
 
     assertTrue(response.isOk());
-    assertFalse(response.get("$.data.gameStatus.isStarted", Boolean.class));
+    assertFalse(response.get("$.data.gameStatus.isReady", Boolean.class));
     assertFalse(response.get("$.data.gameStatus.isOver", Boolean.class));
     assertNull(response.get("$.data.gameStatus.winner"));
     assertEquals(FIRST_PLAYER_NAME, response.get("$.data.gameStatus.onMove"));

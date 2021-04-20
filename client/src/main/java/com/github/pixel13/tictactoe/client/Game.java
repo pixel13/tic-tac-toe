@@ -61,7 +61,7 @@ public class Game {
 
   private CompletableFuture<OpponentArrivedSubscription.Data> waitForTheOpponent(Data data) {
     updateBoard(data.getGameStatus().getBoard().stream().map(Cell::from));
-    if (data.getGameStatus().isStarted()) {
+    if (data.getGameStatus().isReady()) {
       onMove = false;
       return CompletableFuture.completedFuture(new OpponentArrivedSubscription.Data(data.getGameStatus().getOnMove()));
     } else {

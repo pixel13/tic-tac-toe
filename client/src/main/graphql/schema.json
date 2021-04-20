@@ -98,7 +98,7 @@
               "deprecationReason": null
             },
             {
-              "name": "isStarted",
+              "name": "isReady",
               "description": "",
               "args": [],
               "type": {
