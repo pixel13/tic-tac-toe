@@ -24,7 +24,7 @@ public class SubscriptionResolver implements GraphQLSubscriptionResolver {
     Player currentPlayer = authManager.getCurrentPlayer();
     return gameEvents
         .filter(game -> game.isOnMove(currentPlayer))
-        .filter(game -> game.getBoard().isClear())
+        .filter(game -> !game.isStarted())
         .map(game -> game.getSecondPlayer().getName());
   }
 
@@ -33,7 +33,7 @@ public class SubscriptionResolver implements GraphQLSubscriptionResolver {
     Player currentPlayer = authManager.getCurrentPlayer();
     return gameEvents
         .filter(game -> game.isOnMove(currentPlayer))
-        .filter(game -> !game.getBoard().isClear());
+        .filter(game -> game.isStarted());
   }
 
 }

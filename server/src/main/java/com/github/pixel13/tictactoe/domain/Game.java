@@ -38,6 +38,10 @@ public class Game {
     return getPlayerOnMove().equals(player);
   }
 
+  public boolean isStarted() {
+    return !board.isClear();
+  }
+
   public void changeTurn() {
     isFirstPlayerOnMove = !isFirstPlayerOnMove;
   }
